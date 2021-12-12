@@ -1,0 +1,415 @@
+package main
+
+// import (
+// 	"log"
+// 	"strings"
+
+// 	"github.com/wellsjo/advent-of-code-2021/common"
+// )
+
+// func main2() {
+// 	examples := parseInput("test-input.txt")
+// 	for i := range examples {
+// 		log.Println(i)
+// 		// ex := examples[i]
+// 		ex := examples[1]
+// 		ex.deduceDigits(ex.in)
+// 		ex.deduceDigits(ex.out)
+// 		break
+// 	}
+// }
+
+// type position string
+
+// const (
+// 	top         position = "top"
+// 	topLeft     position = "top-left"
+// 	topRight    position = "top-right"
+// 	middle      position = "middle"
+// 	bottomLeft  position = "bottom-left"
+// 	bottomRight position = "bottom-right"
+// 	bottom      position = "bottom"
+// )
+
+// var positions = []position{
+// 	top,
+// 	topLeft,
+// 	topRight,
+// 	middle,
+// 	bottomLeft,
+// 	bottomRight,
+// 	bottom,
+// }
+
+// type example struct {
+// 	in  []string
+// 	out []string
+
+// 	positionsLeft     map[position]map[string]struct{}
+// 	possiblePositions map[position]map[string]struct{}
+// 	knownDigits       map[int]struct{}
+
+// 	knownPositions map[position]string
+// 	knownChars     map[string]position
+// 	knownSequences map[sequence]int
+
+// 	uniqueDigits map[int]map[int]bool
+// }
+
+// type sequence struct {
+// 	a bool
+// 	b bool
+// 	c bool
+// 	d bool
+// 	e bool
+// 	f bool
+// 	g bool
+// }
+
+// func getSequence(in string) sequence {
+// 	var d sequence
+// 	for i := range in {
+// 		if in[i] == 'a' {
+// 			d.a = true
+// 		}
+// 		if in[i] == 'b' {
+// 			d.b = true
+// 		}
+// 		if in[i] == 'c' {
+// 			d.c = true
+// 		}
+// 		if in[i] == 'd' {
+// 			d.d = true
+// 		}
+// 		if in[i] == 'e' {
+// 			d.e = true
+// 		}
+// 		if in[i] == 'f' {
+// 			d.f = true
+// 		}
+// 		if in[i] == 'g' {
+// 			d.g = true
+// 		}
+// 	}
+// 	return d
+// }
+
+// func (e example) deduceDigits(input []string) {
+// 	for i := range input {
+// 		sequenceLength := len(input[i])
+
+// 		// known := e.knownPositions[input[i]]
+// 		possibleDigits := e.getDigitForSeqLength(sequenceLength)
+// 		log.Println("POSSIBLE", sequenceLength, possibleDigits)
+// 		e.removeImpossiblePositions(possibleDigits, input[i])
+
+// 		e.reduceLeft()
+// 	}
+
+// 	log.Println()
+// 	// log.Println("POSSIBLE POSITIONS", e.possiblePositions)
+// 	log.Println("LEFT POSITIONS", e.positionsLeft)
+// 	log.Println("KNOWN POSITIONS", e.knownPositions)
+// 	log.Println("UNIQUE", e.uniqueDigits)
+// }
+
+// func (e example) removeImpossiblePositions(digits []int, seq string) {
+// 	if len(digits) == 1 {
+// 		log.Println("REMOVEING")
+// 		e.removePositionsForDigit(digits[0], seq)
+// 		return
+// 	}
+
+// 	for char, pos := range e.knownChars {
+// 		if strings.Contains(seq, char) {
+// 			for i := range digits {
+// 				possiblePositionsForDigit := positionMap[digits[i]]
+// 				if !possiblePositionsForDigit[pos] {
+// 					e.removeUniquePossible(len(seq), digits[i])
+// 				}
+// 			}
+// 		}
+// 	}
+
+// 	// for i := range digits {
+// 	// 	digit := digits[i]
+// 	// 	// possiblePositionsForDigit := positionMap[digit]
+// 	// 	// for pos, _ := range possiblePositionsForDigit {
+// 	// 	// }
+// 	// }
+// }
+
+// func (e example) removeUniquePossible(seqLen int, digit int) {
+// 	log.Println("REMOVING UNIQUE", seqLen, digit)
+// 	delete(e.uniqueDigits[seqLen], digit)
+// }
+
+// func (e example) removePositionsForDigit(digit int, seq string) {
+// 	possiblePositionsForDigit := positionMap[digit]
+// 	for i := range positions {
+// 		pos := positions[i]
+// 		if _, ok := possiblePositionsForDigit[pos]; !ok {
+// 			for j := range seq {
+// 				delete(e.positionsLeft[pos], string(seq[j]))
+// 			}
+// 		}
+// 	}
+// }
+
+// // func (e example) reduce() {
+// // 	log.Println("REDUCE")
+// // 	for pos, charMap := range e.possiblePositions {
+// // 		for pos1, charMap1 := range e.possiblePositions {
+// // 			if pos1 == pos {
+// // 				continue
+// // 			}
+// // 			if len(charMap) < len(charMap1) {
+// // 				continue
+// // 			}
+// // 			if mapsSame, sharedChars := mapsAreSame(charMap, charMap1); !mapsSame {
+// // 				for i := range sharedChars {
+// // 					delete(charMap, sharedChars[i])
+// // 				}
+// // 				// We have now solved for a position
+// // 				if len(charMap) == 1 {
+// // 					for k, _ := range charMap {
+// // 						e.knownPositions[pos] = k
+// // 						e.removeCharFromPossible(k)
+// // 						break
+// // 					}
+// // 				}
+// // 			}
+// // 		}
+// // 	}
+// // }
+
+// func (e example) reduceLeft() {
+// 	log.Println("REDUCE POSSIBLE")
+// 	for pos, charMap := range e.positionsLeft {
+// 		for pos1, charMap1 := range e.positionsLeft {
+// 			if pos1 == pos {
+// 				continue
+// 			}
+// 			if len(charMap) < len(charMap1) {
+// 				continue
+// 			}
+// 			if mapsSame, sharedChars := mapsAreSame(charMap, charMap1); !mapsSame {
+// 				for i := range sharedChars {
+// 					delete(charMap, sharedChars[i])
+// 				}
+// 				// We have now solved for a position
+// 				if len(charMap) == 1 {
+// 					for k, _ := range charMap {
+// 						e.knownPositions[pos] = k
+// 						e.knownChars[k] = pos
+// 						e.removeCharFromPossible(k)
+// 						break
+// 					}
+// 				}
+// 			}
+// 		}
+// 	}
+// }
+
+// func (e example) removeCharFromPossible(char string) {
+// 	for pos, charMap := range e.possiblePositions {
+// 		if _, ok := e.knownPositions[pos]; ok {
+// 			continue
+// 		}
+// 		delete(charMap, char)
+// 	}
+// }
+
+// func mapsAreSame(m1, m2 map[string]struct{}) (bool, []string) {
+// 	mapsSame := true
+// 	if len(m1) != len(m2) {
+// 		mapsSame = false
+// 	}
+
+// 	sharedChars := []string{}
+// 	for k, _ := range m1 {
+// 		_, has := m2[k]
+// 		if !has {
+// 			mapsSame = false
+// 		} else {
+// 			sharedChars = append(sharedChars, k)
+// 		}
+// 	}
+
+// 	return mapsSame, sharedChars
+// }
+
+// func (e example) getDigitForSeqLength(length int) []int {
+// 	possDigits := []int{}
+// 	if possibleDigits, ok := e.uniqueDigits[length]; ok {
+// 		for digit, _ := range possibleDigits {
+// 			// if _, known := e.knownDigits[digit]; known {
+// 			// 	continue
+// 			// }
+// 			possDigits = append(possDigits, digit)
+// 		}
+// 	}
+// 	return possDigits
+// }
+
+// func (e example) setPositionsFor(digit int, seq string) {
+// 	possiblePositionsForDigit := positionMap[digit]
+
+// 	for pos, _ := range possiblePositionsForDigit {
+// 		if _, has := e.knownPositions[pos]; has {
+// 			continue
+// 		}
+
+// 		possibleCharMap, ok := e.possiblePositions[pos]
+// 		if !ok {
+// 			possibleCharMap = map[string]struct{}{}
+// 			for i := range seq {
+// 				possibleCharMap[string(seq[i])] = struct{}{}
+// 			}
+// 		} else {
+// 			possibleCharMap = getNewCharMap(possibleCharMap, seq)
+// 			if len(possibleCharMap) == 1 {
+// 				for k, _ := range possibleCharMap {
+// 					e.knownPositions[pos] = k
+// 					break
+// 				}
+// 			}
+// 		}
+// 		e.possiblePositions[pos] = possibleCharMap
+// 	}
+// }
+
+// func getNewCharMap(possibleChars map[string]struct{}, seq string) map[string]struct{} {
+// 	newMap := map[string]struct{}{}
+// 	for k, _ := range possibleChars {
+// 		for i := range seq {
+// 			char := string(seq[i])
+// 			if char == k {
+// 				newMap[k] = struct{}{}
+// 			}
+// 		}
+// 	}
+// 	return newMap
+// }
+
+// var positionMap = map[int]map[position]bool{
+// 	0: map[position]bool{
+// 		top:         true,
+// 		topLeft:     true,
+// 		topRight:    true,
+// 		bottomLeft:  true,
+// 		bottomRight: true,
+// 		bottom:      true,
+// 	},
+// 	1: map[position]bool{
+// 		topRight:    true,
+// 		bottomRight: true,
+// 	},
+// 	2: map[position]bool{
+// 		top:        true,
+// 		topRight:   true,
+// 		middle:     true,
+// 		bottomLeft: true,
+// 		bottom:     true,
+// 	},
+// 	3: map[position]bool{
+// 		top:         true,
+// 		topRight:    true,
+// 		middle:      true,
+// 		bottomRight: true,
+// 		bottom:      true,
+// 	},
+// 	4: map[position]bool{
+// 		topRight:    true,
+// 		topLeft:     true,
+// 		middle:      true,
+// 		bottomRight: true,
+// 	},
+// 	5: map[position]bool{
+// 		top:         true,
+// 		topLeft:     true,
+// 		middle:      true,
+// 		bottomRight: true,
+// 		bottom:      true,
+// 	},
+// 	6: map[position]bool{
+// 		top:         true,
+// 		topLeft:     true,
+// 		middle:      true,
+// 		bottomLeft:  true,
+// 		bottomRight: true,
+// 		bottom:      true,
+// 	},
+// 	7: map[position]bool{
+// 		top:         true,
+// 		topRight:    true,
+// 		bottomRight: true,
+// 	},
+// 	8: map[position]bool{
+// 		top:         true,
+// 		topRight:    true,
+// 		topLeft:     true,
+// 		middle:      true,
+// 		bottomLeft:  true,
+// 		bottomRight: true,
+// 		bottom:      true,
+// 	},
+// 	9: map[position]bool{
+// 		top:         true,
+// 		topRight:    true,
+// 		topLeft:     true,
+// 		middle:      true,
+// 		bottomRight: true,
+// 		bottom:      true,
+// 	},
+// }
+
+// func parseInput(path string) []example {
+// 	lines, err := common.ReadLines(path)
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	examples := []example{}
+// 	for i := 0; i < len(lines); i++ {
+// 		parts := strings.Split(lines[i], " | ")
+// 		in := strings.Split(parts[0], " ")
+// 		out := strings.Split(parts[1], " ")
+// 		examples = append(examples, newExample(in, out))
+// 	}
+
+// 	return examples
+// }
+
+// func newExample(in, out []string) example {
+// 	pp := map[position]map[string]struct{}{}
+// 	letters := []string{"a", "b", "c", "d", "e", "f", "g"}
+// 	for j := range positions {
+// 		pos := positions[j]
+// 		pp[pos] = map[string]struct{}{}
+// 		for i := range letters {
+// 			pp[pos][letters[i]] = struct{}{}
+// 		}
+// 	}
+// 	return example{
+// 		in:                in,
+// 		out:               out,
+// 		positionsLeft:     pp,
+// 		possiblePositions: map[position]map[string]struct{}{},
+// 		knownPositions:    map[position]string{},
+// 		knownChars:        map[string]position{},
+// 		knownDigits:       map[int]struct{}{},
+// 		uniqueDigits:      newUniqueDigitsMap(),
+// 	}
+// }
+
+// func newUniqueDigitsMap() map[int]map[int]bool {
+// 	return map[int]map[int]bool{
+// 		6: map[int]bool{0: true, 6: true, 9: true},
+// 		2: map[int]bool{1: true},
+// 		5: map[int]bool{2: true, 3: true, 5: true},
+// 		4: map[int]bool{4: true},
+// 		3: map[int]bool{7: true},
+// 		7: map[int]bool{8: true},
+// 	}
+// }
