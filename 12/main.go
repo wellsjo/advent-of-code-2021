@@ -64,10 +64,8 @@ func (p puzzle) traverse(
 				return
 			}
 
-		case 2:
-			panic("invalid")
 		default:
-			panic("invalid")
+			panic("invalid state")
 		}
 	}
 
