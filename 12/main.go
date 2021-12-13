@@ -186,10 +186,10 @@ func getRole(s string) role {
 		return end
 	}
 	if unicode.IsLower(rune(s[0])) {
-		return "small"
+		return small
 	}
 	if unicode.IsUpper(rune(s[0])) {
-		return "big"
+		return big
 	}
 	panic("invalid input")
 }
