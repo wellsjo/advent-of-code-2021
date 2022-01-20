@@ -76,25 +76,6 @@ func (p *paper) numDots() int {
 	return count
 }
 
-func (p paper) get(x, y int) string {
-	return p[y][x]
-}
-
-func (p paper) copyRightFrom(newX int) paper {
-	c := make(paper, len(p))
-	for i := range c {
-		c[i] = p[i][:newX]
-	}
-	for i := 0; i < len(p); i++ {
-		for j := newX + 1; j < (newX*2)+1; j++ {
-			if c[i][(2*newX)-j] != "x" {
-				c[i][(2*newX)-j] = p[i][j]
-			}
-		}
-	}
-	return c
-}
-
 func (p paper) print() {
 	w := new(tabwriter.Writer)
 	w.Init(os.Stdout, 0, 0, 1, ' ', tabwriter.AlignRight)
